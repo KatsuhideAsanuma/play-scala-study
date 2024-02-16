@@ -39,24 +39,36 @@ class HomeController @Inject()(db: Database,cc: MessagesControllerComponents)
     Ok(views.html.add("fix form.",form))
   }
 
-  def create()=Action{implicit request =>
-    val formdata = form.bindFromRequest
-    val data = formdata.get
-    try{
-      db.withConnection{conn =>
-          val ps=conn.prepareStatement(
-            "INSERT INTO people values VALUES(default,?,?,?)"
-          )
-          ps.setString(1,data.name)
-          ps.setString(2,data.email)
-          ps.setString(3,data.tel)
-          ps.executeUpdate
-        }
- 
-        
-      }       catch {
-          case e: SQLException => Ok(views.html.add("error",form))
+def create() = Action { implicit request =>
+  form.bindFromRequest.fold(
+    formWithErrors => {
+      // バインド失敗時の処理
+      BadRequest(views.html.add("エラーが発生しました。", formWithErrors))
+    },
+    formData => {
+      // バインド成功時の処理
+      try {
+        db.withConnection { conn =>
+          // データをデータベースに挿入
+          val ps = conn.prepareStatement("INSERT INTO people VALUES (default, ?, ?, ?)")
+          ps.setString(1, formData.name)
+          ps.setString(2, formData.email)
+          ps.setString(3, formData.tel)
+          ps.executeUpdate()
+
+          // 挿入後のデータベースの状態を取得して出力
+          val stmt = conn.createStatement()
+          val rs = stmt.executeQuery("SELECT * FROM people")
+          println("データベースの現在の状態:")
+          while (rs.next()) {
+            println(s"ID: ${rs.getInt("id")}, 名前: ${rs.getString("name")}, メール: ${rs.getString("email")}, 電話番号: ${rs.getString("tel")}")
+          }
         }
         Redirect(routes.HomeController.index())
-  }
+      } catch {
+        case e: SQLException => BadRequest(views.html.add("データベースエラーが発生しました。", form))
+      }
+    }
+  )
+}
 }
