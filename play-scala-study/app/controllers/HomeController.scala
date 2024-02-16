@@ -40,7 +40,7 @@ class HomeController @Inject()(db: Database,cc: MessagesControllerComponents)
   }
 
   def create()=Action{implicit request =>
-    val formdata = form.bindFromRequest()
+    val formdata = form.bindFromRequest
     val data = formdata.get
     try{
       db.withConnection{conn =>
