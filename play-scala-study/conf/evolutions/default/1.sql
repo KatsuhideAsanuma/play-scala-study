@@ -1,10 +1,10 @@
 # --- !Ups
 
-CREATE TABLE people (
-  `id` int AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `tel` varchar(255),
+CREATE TABLE PEOPLE (
+  `ID` INT AUTO_INCREMENT PRIMARY KEY,
+  `NAME` VARCHAR(255) NOT NULL,
+  `EMAIL` VARCHAR(255) NOT NULL,
+  `TEL` VARCHAR(255)
 );
 insert into people (name, email, tel) values ('John Doe', 'john@doe.com', '1234567890');
 insert into people (name, email, tel) values ('Jane Doe', 'jane@doe.com', '1234567890');

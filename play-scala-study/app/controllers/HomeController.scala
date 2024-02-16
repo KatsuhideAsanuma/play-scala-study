@@ -13,8 +13,8 @@ import play.api.data.Forms._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(db: Database,cc: MessageControllerComponents)
- extends MessageAbstractController(cc) {
+class HomeController @Inject()(db: Database,cc: MessagesControllerComponents)
+ extends MessagesAbstractController(cc) {
 
 
   def index() = Action { implicit request =>
